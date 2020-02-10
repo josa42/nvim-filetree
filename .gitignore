@@ -1,0 +1,3 @@
+/bin/*
+!/bin/*.uuid
+.DS_Store
