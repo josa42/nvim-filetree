@@ -11,18 +11,17 @@ tag=$1
 
 ./run/build.sh
 
-ls -a \
-  | grep -v '^bin$' \
-  | grep -v '^plugin$' \
-  | grep -v '^syntax$' \
-  | grep -v '^LICENSE$' \
-  | grep -v '^README.md$' \
-  | grep -v '^\.git$' \
-  | grep -v '^\.\.$' \
-  | grep -v '^\.$' \
-  | xargs -n1 rm -rf
+rm -rf run pkg
+
+tag="v$(echo $tag | sed 's/^v//')"
 
 git add -A
-git commit -m "Release $tag"
-git tag "$tag"
+git add -f bin/tree
+
+git commit -m "🎉 Release $tag"
+
+git tag $tag
+git push origin $tag
+
 git reset --hard HEAD@{1}
+
