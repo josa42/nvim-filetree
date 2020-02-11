@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	"github.com/josa42/go-neovim"
 	"github.com/josa42/go-neovim/view"
@@ -219,34 +220,29 @@ func (p *TreePlugin) createTreeBuffer() *neovim.Buffer {
 	defer p.api.Global.Vars.SetBool(GlobalVarIsTreeOpening, false)
 
 	buffer := p.api.CreateSplitBuffer(WindowWidth, neovim.SplitTopLeft, neovim.SplitVertical)
-	bo := buffer.Options
-	bo.SetFileType("tree")
-
 	buffer.Vars.SetBool(BufferVarIsTree, true)
 	buffer.Vars.SetBool(BufferVarHideLightline, true)
+	buffer.Options.SetFileType("tree")
+	buffer.SetTitle("פּ")
 
-	for _, win := range buffer.Windows() {
-		// window
-		// win := p.api.CurrentWindow()
-		wo := win.Options
-		wo.SetFixWidth(true)
-		wo.SetNumber(false)
-		wo.SetRelativeNumber(false)
-		wo.SetFoldColumn(0)
-		wo.SetFoldMethod(neovim.WindowFoldMethodManual)
-		wo.SetFoldEnable(false)
-		wo.SetList(false)
-		wo.SetSpell(false)
-		wo.SetWrap(false)
-		wo.SetSignColumn(neovim.WindowSignColumnNo)
-		wo.SetCursorLine(true)
-	}
-
-	// Commands
-	// Remove all abbreviations for Insert mode.
-	// batch.Command("iabclear <buffer>")
+	p.api.Executef("setlocal %s", strings.Join([]string{
+		"cursorline",
+		"foldcolumn=0",
+		"nonumber",
+		"foldmethod=manual",
+		"nocursorcolumn",
+		"nofoldenable",
+		"nolist",
+		"norelativenumber",
+		"nospell",
+		"nowrap",
+		"signcolumn=no",
+		"colorcolumn=",
+	}, " "))
+	p.api.Execute("iabclear <buffer>")
 
 	p.api.Renderer.Attach(buffer, p.treeView)
+
 	p.api.Global.Vars.SetInt(GlobalVarTreeBufferID, buffer.ID())
 	p.api.Global.Vars.SetBool(GlobalVarIsTreeOpening, false)
 
@@ -254,8 +250,14 @@ func (p *TreePlugin) createTreeBuffer() *neovim.Buffer {
 }
 
 func (p *TreePlugin) attachTreeBuffer(b *neovim.Buffer) {
-	p.api.Executef("topleft vertical %d new | buffer %d", WindowWidth, b.ID())
 	p.api.Global.Vars.SetInt(GlobalVarTreeBufferID, b.ID())
+
+	p.api.Executef("topleft vertical %d new | buffer %d", WindowWidth, b.ID())
+
+	// window
+	win := p.api.CurrentWindow()
+	wo := win.Options
+	wo.SetFixWidth(true)
 }
 
 func (p *TreePlugin) treeBufferHasFocus() bool {
