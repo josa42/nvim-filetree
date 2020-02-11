@@ -78,7 +78,7 @@ func (i *FileItem) Children() []view.TreeItem {
 
 	for _, c := range children {
 		i, ok := c.(*FileItem)
-		if ok && !i.provider.isIgnored(i.path) {
+		if ok && !i.provider.isIgnored(i.path) && i.provider.fileStatus.get(i.path, false) != FileStatusIgnored {
 			filtered = append(filtered, c)
 		}
 	}

@@ -27,6 +27,8 @@ type statusMap map[string]status
 
 func (s statusMap) get(path string, dir bool) status {
 
+	path = strings.TrimRight(path, `/`)
+
 	if dir {
 		for p, _ := range s {
 			if strings.HasPrefix(p, path) {
@@ -48,19 +50,25 @@ func (s statusMap) hashChanges(s2 statusMap) bool {
 
 func updateStatus(dir string) statusMap {
 	// TODO handle: not in repo; git bin does not exist
-	out, err := exec.Command("git", "status", "--porcelain").Output()
-	// TODO add --ignore?
-
+	rootDirB, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
 	if err != nil {
 		log.Printf("err: %v", err)
 	}
+
+	rootDir := strings.TrimSpace(string(rootDirB))
+
+	out, err := exec.Command("git", "status", "--porcelain", "--ignored").Output()
+	if err != nil {
+		log.Printf("err: %v", err)
+	}
+
 	// log.Println(string(out))
 
 	s := statusMap{}
 	for _, l := range strings.Split(string(out), "\n") {
 		p := expStatusLine.FindStringSubmatch(l)
 		if len(p) > 0 {
-			path := filepath.Join(dir, p[2])
+			path := strings.TrimRight(filepath.Join(rootDir, p[2]), `/`)
 			s[path] = getStatus(p[1])
 		}
 	}
