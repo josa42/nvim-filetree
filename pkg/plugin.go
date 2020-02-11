@@ -37,11 +37,9 @@ type TreePlugin struct {
 }
 
 func (tp *TreePlugin) Register(api neovim.RegisterApi) {
-	api.On(neovim.EventWinEnter, "*", tp.SyncOnEnter)
-	api.On(neovim.EventBufWinEnter, "*", tp.SyncOnEnter)
-	api.On(neovim.EventBufEnter, "*", tp.SyncClose)
-	api.On(neovim.EventBufLeave, "*", tp.SyncCloseLast)
-	// api.On(neovim.EventTabEnter, "*", tp.treeView.Rerender)
+	if a, ok := api.(*neovim.Api); ok {
+		tp.api = a
+	}
 
 	api.Function("TreeOpen", tp.Open)
 	api.Function("TreeClose", tp.Close)
@@ -53,7 +51,13 @@ func (tp *TreePlugin) Register(api neovim.RegisterApi) {
 
 func (tp *TreePlugin) Activate(api *neovim.Api) {
 	tp.api = api
+
 	tp.treeView = view.NewTreeView(files.NewFileProvider(api))
+
+	api.Global.On(neovim.EventBufWinEnter, tp.onEnterSyncState)
+	api.Global.On(neovim.EventWinEnter, tp.onEnterSyncState)
+	api.Global.On(neovim.EventBufEnter, tp.onLeaveCloseLastTree)
+	api.Global.On(neovim.EventBufLeave, tp.onLeaveUnfocusTree)
 }
 
 func (p *TreePlugin) Close() {
@@ -124,22 +128,23 @@ func (p *TreePlugin) Open() {
 	p.api.Global.Vars.SetBool(GlobalVarIsTreeOpening, false)
 }
 
-func (p *TreePlugin) SyncClose() error {
+func (p *TreePlugin) onLeaveCloseLastTree() {
 	if p.api.Global.Vars.Bool(GlobalVarIsTreeOpening) {
-		return nil
+		return
 	}
 
+	log.Printf("hasOnlyTreeBuffer: %v", p.hasOnlyTreeBuffer())
 	if p.hasOnlyTreeBuffer() {
 		tab := p.api.CurrentTab()
 		tab.Close(true)
 	}
-
-	return nil
 }
 
-func (p *TreePlugin) SyncOnEnter() error {
+// Sync open file tree across tabs
+func (p *TreePlugin) onEnterSyncState() {
+	log.Println("onEnterSyncState")
 	if p.api.Global.Vars.Bool(GlobalVarIsTreeOpening) {
-		return nil
+		return
 	}
 
 	if p.api.Global.Vars.Bool(GlobalVarIsTreeOpen) {
@@ -152,11 +157,9 @@ func (p *TreePlugin) SyncOnEnter() error {
 	} else {
 		p.Close()
 	}
-
-	return nil
 }
 
-func (p *TreePlugin) SyncCloseLast() error {
+func (p *TreePlugin) onLeaveUnfocusTree() {
 	b := p.api.CurrentBuffer()
 	if b.Vars.Bool(BufferVarIsTree) {
 		tab := p.api.CurrentTab()
@@ -167,7 +170,6 @@ func (p *TreePlugin) SyncCloseLast() error {
 
 		window.Focus()
 	}
-	return nil
 }
 
 func (p *TreePlugin) Toggle() {
@@ -223,27 +225,28 @@ func (p *TreePlugin) createTreeBuffer() *neovim.Buffer {
 	buffer.Vars.SetBool(BufferVarIsTree, true)
 	buffer.Vars.SetBool(BufferVarHideLightline, true)
 
-	// window
-	win := p.api.CurrentWindow()
-	wo := win.Options
-	wo.SetFixWidth(true)
-	wo.SetNumber(false)
-	wo.SetRelativeNumber(false)
-	wo.SetFoldColumn(0)
-	wo.SetFoldMethod(neovim.WindowFoldMethodManual)
-	wo.SetFoldEnable(false)
-	wo.SetList(false)
-	wo.SetSpell(false)
-	wo.SetWrap(false)
-	wo.SetSignColumn(neovim.WindowSignColumnNo)
-	wo.SetCursorLine(true)
+	for _, win := range buffer.Windows() {
+		// window
+		// win := p.api.CurrentWindow()
+		wo := win.Options
+		wo.SetFixWidth(true)
+		wo.SetNumber(false)
+		wo.SetRelativeNumber(false)
+		wo.SetFoldColumn(0)
+		wo.SetFoldMethod(neovim.WindowFoldMethodManual)
+		wo.SetFoldEnable(false)
+		wo.SetList(false)
+		wo.SetSpell(false)
+		wo.SetWrap(false)
+		wo.SetSignColumn(neovim.WindowSignColumnNo)
+		wo.SetCursorLine(true)
+	}
 
 	// Commands
 	// Remove all abbreviations for Insert mode.
 	// batch.Command("iabclear <buffer>")
 
 	p.api.Renderer.Attach(buffer, p.treeView)
-
 	p.api.Global.Vars.SetInt(GlobalVarTreeBufferID, buffer.ID())
 	p.api.Global.Vars.SetBool(GlobalVarIsTreeOpening, false)
 

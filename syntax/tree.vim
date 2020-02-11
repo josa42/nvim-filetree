@@ -1,6 +1,6 @@
-syn match TreeIcon /\(^\(  \)*. \)\@<=[^ ]/
-syn match TreeDirIcon /[ﱮ▸▾•]/ containedin=TreeIcon
-syn match TreeFileIcon /[•]/ containedin=TreeIcon
+syn match TreeIcon     /\(^\(  \)*. \)\@<=[^ ]/
+syn match TreeDirIcon  /[ﱮ▸▾•]/ containedin=TreeIcon
+syn match TreeFileIcon /[•]/    containedin=TreeIcon
 
 syn match TreeName     /\(^\(  \)*. [ﱮ▸▾•] \)\@<=.*$/
 syn match TreeDirName  /\(^\(  \)*. [ﱮ▸▾•] \)\@<=.*$/
