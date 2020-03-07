@@ -161,7 +161,12 @@ func (p *FileProvider) Unlisten() {
 }
 
 func (p *FileProvider) runChangeListener() {
+
 	go func() {
+		gitAvailable := isGitAvailable()
+
+		nextGitRun := time.Now()
+
 		log.Println("ChangeListener: Start")
 		for true {
 
@@ -172,7 +177,11 @@ func (p *FileProvider) runChangeListener() {
 			}
 
 			pc := p.updateRootPath()
-			sc := p.updateFileStatus()
+
+			sc := false
+			if gitAvailable {
+				sc, nextGitRun = p.updateFileStatus(nextGitRun)
+			}
 
 			if pc || sc {
 				t := *p.changeTrigger
@@ -182,13 +191,23 @@ func (p *FileProvider) runChangeListener() {
 	}()
 }
 
-func (p *FileProvider) updateFileStatus() bool {
+func (p *FileProvider) updateFileStatus(nextRun time.Time) (bool, time.Time) {
+
+	if nextRun.After(time.Now()) {
+		// log.Printf("wait: %fs", nextRun.Sub(time.Now()).Seconds())
+		return false, nextRun
+	}
+
+	if !isGitRepo(p.root.path) {
+		return false, time.Now().Add(30 * time.Second)
+	}
+
 	fs := updateStatus(p.root.path)
 
 	if p.fileStatus.hashChanges(fs) {
 		p.fileStatus = fs
-		return true
+		return true, time.Now().Add(5 * time.Second)
 	}
 
-	return false
+	return false, time.Now().Add(5 * time.Second)
 }

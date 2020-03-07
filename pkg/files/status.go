@@ -3,6 +3,7 @@ package files
 import (
 	"encoding/json"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
@@ -49,22 +50,28 @@ func (s statusMap) hashChanges(s2 statusMap) bool {
 }
 
 func updateStatus(dir string) statusMap {
+	s := statusMap{}
+
 	// TODO handle: not in repo; git bin does not exist
-	rootDirB, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
+	cmdToplevel := exec.Command("git", "rev-parse", "--show-toplevel")
+	cmdToplevel.Dir = dir
+
+	rootDirB, err := cmdToplevel.Output()
 	if err != nil {
-		log.Printf("err: %v", err)
+		log.Printf("git rev-parse - err: %v", err)
+		return s
 	}
 
 	rootDir := strings.TrimSpace(string(rootDirB))
 
-	out, err := exec.Command("git", "status", "--porcelain", "--ignored").Output()
+	cmdStatus := exec.Command("git", "status", "--porcelain", "--ignored")
+	cmdStatus.Dir = dir
+	out, err := cmdStatus.Output()
 	if err != nil {
-		log.Printf("err: %v", err)
+		log.Printf("git status - err: %v", err)
+		return s
 	}
 
-	// log.Println(string(out))
-
-	s := statusMap{}
 	for _, l := range strings.Split(string(out), "\n") {
 		p := expStatusLine.FindStringSubmatch(l)
 		if len(p) > 0 {
@@ -74,6 +81,28 @@ func updateStatus(dir string) statusMap {
 	}
 
 	return s
+}
+
+func isGitAvailable() bool {
+	cmd := exec.Command("git", "--version")
+	err := cmd.Run()
+
+	log.Printf("err: %v", err)
+	return err == nil
+}
+
+func isGitRepo(dir string) bool {
+
+	gitPath := filepath.Join(dir, ".git")
+	if _, err := os.Stat(gitPath); err == nil {
+
+		cmd := exec.Command("git", "s")
+		cmd.Dir = dir
+		err := cmd.Run()
+
+		return err == nil
+	}
+	return false
 }
 
 // ' ' = unmodified

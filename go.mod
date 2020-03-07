@@ -7,4 +7,4 @@ require (
 	github.com/josa42/go-neovim v0.1.0
 )
 
-// replace github.com/josa42/go-neovim => ../go-neovim
+replace github.com/josa42/go-neovim => ../go-neovim
