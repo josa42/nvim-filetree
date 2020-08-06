@@ -87,7 +87,10 @@ func isGitAvailable() bool {
 	cmd := exec.Command("git", "--version")
 	err := cmd.Run()
 
-	log.Printf("err: %v", err)
+	if err != nil {
+		log.Printf("err: %v", err)
+	}
+
 	return err == nil
 }
 

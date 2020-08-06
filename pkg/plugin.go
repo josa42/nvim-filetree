@@ -58,7 +58,7 @@ func (tp *TreePlugin) Activate(api *neovim.Api) {
 	api.Global.On(neovim.EventBufWinEnter, tp.onEnterSyncState)
 	api.Global.On(neovim.EventWinEnter, tp.onEnterSyncState)
 	api.Global.On(neovim.EventBufEnter, tp.onLeaveCloseLastTree)
-	api.Global.On(neovim.EventBufLeave, tp.onLeaveUnfocusTree)
+	api.Global.On(neovim.EventWinLeave, tp.onLeaveUnfocusTree)
 }
 
 func (p *TreePlugin) Close() {
@@ -134,7 +134,6 @@ func (p *TreePlugin) onLeaveCloseLastTree() {
 		return
 	}
 
-	log.Printf("hasOnlyTreeBuffer: %v", p.hasOnlyTreeBuffer())
 	if p.hasOnlyTreeBuffer() {
 		tab := p.api.CurrentTab()
 		tab.Close(true)
@@ -143,7 +142,6 @@ func (p *TreePlugin) onLeaveCloseLastTree() {
 
 // Sync open file tree across tabs
 func (p *TreePlugin) onEnterSyncState() {
-	log.Println("onEnterSyncState")
 	if p.api.Global.Vars.Bool(GlobalVarIsTreeOpening) {
 		return
 	}
@@ -162,11 +160,11 @@ func (p *TreePlugin) onEnterSyncState() {
 
 func (p *TreePlugin) onLeaveUnfocusTree() {
 	b := p.api.CurrentBuffer()
+
 	if b.Vars.Bool(BufferVarIsTree) {
 		tab := p.api.CurrentTab()
 		window, _ := tab.FindWindow(func(window *neovim.Window) bool {
-			b := window.Buffer()
-			return !b.Vars.Bool(BufferVarIsTree)
+			return !window.Buffer().Vars.Bool(BufferVarIsTree)
 		})
 
 		window.Focus()

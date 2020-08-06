@@ -10,10 +10,10 @@ endfunction
 
 call remote#host#Register('tree', 'x', function('s:StartPlugin'))
 call remote#host#RegisterPlugin('tree', '0', [
-\ {'type': 'autocmd', 'name': 'BufDelete', 'sync': 0, 'opts': {'pattern': '*'}},
-\ {'type': 'autocmd', 'name': 'BufWinLeave', 'sync': 0, 'opts': {'pattern': '*'}},
-\ {'type': 'autocmd', 'name': 'BufWipeout', 'sync': 0, 'opts': {'pattern': '*'}},
-\ {'type': 'autocmd', 'name': 'TabClosed', 'sync': 0, 'opts': {'pattern': '*'}},
+\ {'type': 'autocmd', 'name': 'BufDelete', 'sync': 1, 'opts': {'pattern': '*'}},
+\ {'type': 'autocmd', 'name': 'BufWinLeave', 'sync': 1, 'opts': {'pattern': '*'}},
+\ {'type': 'autocmd', 'name': 'BufWipeout', 'sync': 1, 'opts': {'pattern': '*'}},
+\ {'type': 'autocmd', 'name': 'TabClosed', 'sync': 1, 'opts': {'pattern': '*'}},
 \ {'type': 'function', 'name': 'Handler_2f4eab2fca750d49cc9039bac724b89b', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'OperatorFunc_2f4eab2fca750d49cc9039bac724b89b', 'sync': 1, 'opts': {}},
 \ {'type': 'function', 'name': 'TreeClose', 'sync': 0, 'opts': {}},

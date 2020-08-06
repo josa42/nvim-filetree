@@ -2,6 +2,8 @@ github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/josa42/go-gitignore v0.1.0 h1:R6EQzsQqlSjCyab3dDsH+NqqqPVAmeqBW4VmOjo9xjM=
 github.com/josa42/go-gitignore v0.1.0/go.mod h1:E2xbO40zPL8v9/Dl35LvhunqjJm4sMl07v8jEZzOAXM=
+github.com/josa42/go-neovim v0.2.0 h1:aIFa9oLtJMO2rTdCIfPmFGRpox09YSF4qdDLsPebCng=
+github.com/josa42/go-neovim v0.2.0/go.mod h1:GyBFqqgVmcW89prEvVPZu1+xYu7tUFNlAHBBGsp8S20=
 github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 h1:iQTw/8FWTuc7uiaSepXwyf3o52HaUYcV+Tu66S3F5GA=
 github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0/go.mod h1:1NbS8ALrpOvjt0rHPNLyCIeMtbizbir8U//inJ+zuB8=
 github.com/neovim/go-client v1.1.2 h1:WJjJla3xaieHmCsC1u/W4/KDcNRAgsFIIirGqf89+gQ=
