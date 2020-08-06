@@ -7,7 +7,7 @@ const (
 	Open                = "open"
 	OpenTab             = "open-tab"
 	OpenVerticalSplit   = "open-vertical-split"
-	OpenHoricontalSplit = "open-horicontag-split"
+	OpenHorizontalSplit = "open-horizontal-split"
 	Unfocus             = "unfocus"
 	Help                = "help"
 )

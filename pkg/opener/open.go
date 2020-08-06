@@ -1,6 +1,7 @@
 package opener
 
 import (
+	"log"
 	"time"
 
 	"github.com/josa42/go-neovim"
@@ -44,7 +45,7 @@ func OpenHoricontalSplit(api *neovim.Api, path string) {
 func FocusEditor(api *neovim.Api) {
 	defer func() {
 		if err := recover(); err != nil {
-			// n.Command(fmt.Sprintf("echom '%v'", err))
+			log.Printf("FocusEditor: %v", err)
 		}
 	}()
 
@@ -59,15 +60,7 @@ func FocusEditor(api *neovim.Api) {
 }
 
 func findWindow(api *neovim.Api, path string) (*neovim.Window, bool) {
-
 	return api.FindWindow(func(win *neovim.Window) bool {
 		return win.Buffer().Path() == path
 	})
 }
-
-// TODO Usage window?
-// if bnum !=# -1 && getbufvar(bnum, '&buftype') ==# ''
-//                     \ && !getwinvar(i, '&previewwindow')
-//                     \ && (!getbufvar(bnum, '&modified') || &hidden)
-//             return i
-//         endif

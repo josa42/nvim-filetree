@@ -102,7 +102,7 @@ func (p *FileProvider) Actions() []view.TreeAction {
 		{Keys: "e", Handler: handler(actions.Open)},
 		{Keys: "t", Handler: handler(actions.OpenTab)},
 		{Keys: "v", Handler: handler(actions.OpenVerticalSplit)},
-		{Keys: "s", Handler: handler(actions.OpenHoricontalSplit)},
+		{Keys: "s", Handler: handler(actions.OpenHorizontalSplit)},
 		{Keys: "<ESC>", Handler: handler(actions.Unfocus)},
 		{Keys: "h", Handler: handler(actions.Help)},
 	}
@@ -133,17 +133,16 @@ func (p *FileProvider) handleAction(i *FileItem, action string) {
 	case actions.OpenTab:
 		opener.OpenTab(p.api, i.path)
 
-	case actions.OpenHoricontalSplit:
+	case actions.OpenHorizontalSplit:
 		opener.OpenHoricontalSplit(p.api, i.path)
 
 	case actions.OpenVerticalSplit:
 		opener.OpenVerticalSplit(p.api, i.path)
+
 	case actions.Unfocus:
 		opener.FocusEditor(p.api)
-		// p.api.Execute("silent call TreeUnfocus()")
-		// p.api.Nvim().Call("TreeUnfocus", nil)
+
 	case actions.Help:
-		log.Println("help")
 		p.api.Out.Print("?: Help - (o)pen - (e)dit - (t)ab - (s)plit - (v)ertical split - ESC unfocus")
 	}
 }
@@ -167,12 +166,9 @@ func (p *FileProvider) runChangeListener() {
 
 		nextGitRun := time.Now()
 
-		log.Println("ChangeListener: Start")
-		for true {
-
+		for {
 			time.Sleep(1 * time.Second)
 			if p.changeTrigger == nil {
-				log.Println("ChangeListener: Stop")
 				break
 			}
 
@@ -194,7 +190,6 @@ func (p *FileProvider) runChangeListener() {
 func (p *FileProvider) updateFileStatus(nextRun time.Time) (bool, time.Time) {
 
 	if nextRun.After(time.Now()) {
-		// log.Printf("wait: %fs", nextRun.Sub(time.Now()).Seconds())
 		return false, nextRun
 	}
 

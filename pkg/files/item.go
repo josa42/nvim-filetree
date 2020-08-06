@@ -56,6 +56,7 @@ func (i *FileItem) Children() []view.TreeItem {
 				continue
 			}
 		}
+
 		if !found {
 			children = append(children, NewFileItem(i.path, name, i.provider))
 		}
@@ -82,6 +83,7 @@ func (i *FileItem) Children() []view.TreeItem {
 			filtered = append(filtered, c)
 		}
 	}
+
 	return filtered
 }
 
@@ -94,6 +96,7 @@ func (i *FileItem) String() string {
 			return fmt.Sprintf("%c %s/", icon, i.name)
 		}
 	}
+
 	return fmt.Sprintf("%c %s", icon, i.name)
 }
 
@@ -123,10 +126,12 @@ func (i *FileItem) icon() rune {
 	if i.isDir {
 		if !i.isOpen {
 			return icons[0]
+
 		} else {
 			return icons[1]
 		}
 	}
+
 	return icons[2]
 }
 
@@ -136,10 +141,13 @@ func (i *FileItem) Status() rune {
 	switch i.provider.fileStatus.get(i.path, i.isDir) {
 	case FileStatusChanged:
 		return view.ItemStatusChanged
+
 	case FileStatusUntracked:
 		return view.ItemStatusAdded
+
 	case FileStatusConflicted:
 		return view.ItemStatusConflicted
+
 	default:
 		return ' '
 	}
