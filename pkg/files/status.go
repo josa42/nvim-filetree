@@ -53,7 +53,7 @@ func updateStatus(dir string) statusMap {
 	s := statusMap{}
 
 	// TODO handle: not in repo; git bin does not exist
-	cmdToplevel := exec.Command("git", "rev-parse", "--show-toplevel")
+	cmdToplevel := git("rev-parse", "--show-toplevel")
 	cmdToplevel.Dir = dir
 
 	rootDirB, err := cmdToplevel.Output()
@@ -64,7 +64,7 @@ func updateStatus(dir string) statusMap {
 
 	rootDir := strings.TrimSpace(string(rootDirB))
 
-	cmdStatus := exec.Command("git", "status", "--porcelain", "--ignored")
+	cmdStatus := git("status", "--porcelain", "--ignored", "--no-optional-locks")
 	cmdStatus.Dir = dir
 	out, err := cmdStatus.Output()
 	if err != nil {
@@ -84,7 +84,7 @@ func updateStatus(dir string) statusMap {
 }
 
 func isGitAvailable() bool {
-	cmd := exec.Command("git", "--version")
+	cmd := git("--version")
 	err := cmd.Run()
 
 	if err != nil {
@@ -99,7 +99,7 @@ func isGitRepo(dir string) bool {
 	gitPath := filepath.Join(dir, ".git")
 	if _, err := os.Stat(gitPath); err == nil {
 
-		cmd := exec.Command("git", "s")
+		cmd := git("status")
 		cmd.Dir = dir
 		err := cmd.Run()
 
@@ -170,4 +170,13 @@ func getStatus(m string) status {
 		log.Printf("default: '%s'", m)
 	}
 	return FileStatusNormal
+}
+
+// TODO use go-git/go-git instead of spawning a process?
+func git(args ...string) *exec.Cmd {
+	cmd := exec.Command("git", args...)
+	cmd.Env = append(os.Environ(),
+		"GIT_OPTIONAL_LOCKS=0", // ignored
+	)
+	return cmd
 }

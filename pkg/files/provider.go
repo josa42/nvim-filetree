@@ -166,6 +166,7 @@ func (p *FileProvider) runChangeListener() {
 
 		nextGitRun := time.Now()
 
+		// TODO Fix this! Listen tochangechanges instead?
 		for {
 			time.Sleep(1 * time.Second)
 			if p.changeTrigger == nil {
