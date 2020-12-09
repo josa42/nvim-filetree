@@ -48,6 +48,7 @@ func (tp *TreePlugin) Register(api neovim.RegisterApi) {
 	api.Function("TreeUnfocus", tp.Unfocus)
 	api.Function("TreeFocus", tp.Focus)
 	api.Function("TreeToggleFocus", tp.ToggleFocus)
+	api.Function("TreeToggleSmart", tp.ToggleSmart)
 }
 
 func (tp *TreePlugin) Activate(api *neovim.Api) {
@@ -193,6 +194,21 @@ func (p *TreePlugin) ToggleFocus() {
 	}()
 	if p.treeBufferHasFocus() {
 		p.Unfocus()
+	} else if p.hasTreeBuffer() {
+		p.Focus()
+	} else {
+		p.Open()
+	}
+}
+
+func (p *TreePlugin) ToggleSmart() {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Printf("ToggleSmart() recover: %v\n", err)
+		}
+	}()
+	if p.treeBufferHasFocus() {
+		p.Close()
 	} else if p.hasTreeBuffer() {
 		p.Focus()
 	} else {

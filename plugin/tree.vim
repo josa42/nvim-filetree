@@ -21,5 +21,6 @@ call remote#host#RegisterPlugin('tree', '0', [
 \ {'type': 'function', 'name': 'TreeOpen', 'sync': 0, 'opts': {}},
 \ {'type': 'function', 'name': 'TreeToggle', 'sync': 0, 'opts': {}},
 \ {'type': 'function', 'name': 'TreeToggleFocus', 'sync': 0, 'opts': {}},
+\ {'type': 'function', 'name': 'TreeToggleSmart', 'sync': 0, 'opts': {}},
 \ {'type': 'function', 'name': 'TreeUnfocus', 'sync': 0, 'opts': {}},
 \ ])
