@@ -155,7 +155,6 @@ func (p *FileProvider) Listen(changed func()) {
 }
 
 func (p *FileProvider) Unlisten() {
-	log.Println("unlisten")
 	p.changeTrigger = nil
 }
 

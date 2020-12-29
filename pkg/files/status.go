@@ -19,7 +19,8 @@ const (
 )
 
 var (
-	expStatusLine = regexp.MustCompile(`^(..) (.*)$`)
+	expStatusLine    = regexp.MustCompile(`^(..) (.*)$`)
+	expTrailingSlash = regexp.MustCompile(`/*$`)
 )
 
 type status int
@@ -31,15 +32,32 @@ func (s statusMap) get(path string, dir bool) status {
 	path = strings.TrimRight(path, `/`)
 
 	if dir {
-		for p := range s {
-			if strings.HasPrefix(p, path) {
-				return FileStatusChanged
-			}
+		if s.dirContains(path, FileStatusConflicted) {
+			return FileStatusConflicted
+		}
+
+		if s.dirContains(path, FileStatusChanged) {
+			return FileStatusChanged
+		}
+
+		if s.dirContains(path, FileStatusUntracked) {
+			return FileStatusUntracked
 		}
 	} else if fs, ok := s[path]; ok {
 		return fs
 	}
 	return FileStatusNormal
+}
+
+func (s statusMap) dirContains(path string, fileStatus status) bool {
+	path = expTrailingSlash.ReplaceAllString(path, "/")
+	for p, fs := range s {
+		if fs == fileStatus && strings.HasPrefix(p, path) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (s statusMap) hashChanges(s2 statusMap) bool {
