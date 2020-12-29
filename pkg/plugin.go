@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"regexp"
 	"strings"
 
 	"github.com/josa42/go-neovim"
@@ -25,6 +26,10 @@ const (
 	GlobalVarTreeBufferID  = "tree_buffer_id"
 	GlobalVarIsTreeOpen    = "tree_open"
 	GlobalVarIsTreeOpening = "tree_opening"
+)
+
+var (
+	expIsVimspector = regexp.MustCompile(`vimspector\.(Variables|Watches|StackTrace|Console)$`)
 )
 
 type Tree interface {
@@ -114,7 +119,7 @@ func (p *TreePlugin) Open() {
 			log.Printf("Open() recover: %v\n", err)
 		}
 	}()
-	if p.api.Global.Vars.Bool(GlobalVarIsTreeOpening) {
+	if p.api.Global.Vars.Bool(GlobalVarIsTreeOpening) || p.ignoreCurrentTab() {
 		return
 	}
 
@@ -147,6 +152,14 @@ func (p *TreePlugin) onEnterSyncState() {
 		return
 	}
 
+	if p.ignoreCurrentTab() {
+		if b, found := p.getTreeBuffer(); found {
+			b.Close()
+		}
+
+		return
+	}
+
 	if p.api.Global.Vars.Bool(GlobalVarIsTreeOpen) {
 		focus := p.treeBufferHasFocus()
 		p.Open()
@@ -157,6 +170,16 @@ func (p *TreePlugin) onEnterSyncState() {
 	} else {
 		p.Close()
 	}
+}
+
+func (p *TreePlugin) ignoreCurrentTab() bool {
+	for _, w := range p.api.CurrentTab().Windows() {
+		if expIsVimspector.MatchString(w.Buffer().Path()) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (p *TreePlugin) onLeaveUnfocusTree() {
@@ -178,6 +201,11 @@ func (p *TreePlugin) Toggle() {
 			log.Printf("Toggle() recover: %v\n", err)
 		}
 	}()
+
+	if p.ignoreCurrentTab() {
+		return
+	}
+
 	if p.api.Global.Vars.Bool(GlobalVarIsTreeOpen) {
 		p.Close()
 	} else {
@@ -207,6 +235,11 @@ func (p *TreePlugin) ToggleSmart() {
 			log.Printf("ToggleSmart() recover: %v\n", err)
 		}
 	}()
+
+	if p.ignoreCurrentTab() {
+		return
+	}
+
 	if p.treeBufferHasFocus() {
 		p.Close()
 	} else if p.hasTreeBuffer() {
