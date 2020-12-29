@@ -31,7 +31,7 @@ func (s statusMap) get(path string, dir bool) status {
 	path = strings.TrimRight(path, `/`)
 
 	if dir {
-		for p, _ := range s {
+		for p := range s {
 			if strings.HasPrefix(p, path) {
 				return FileStatusChanged
 			}
@@ -64,7 +64,7 @@ func updateStatus(dir string) statusMap {
 
 	rootDir := strings.TrimSpace(string(rootDirB))
 
-	cmdStatus := git("status", "--porcelain", "--ignored", "--no-optional-locks")
+	cmdStatus := git("status", "--porcelain", "--ignored")
 	cmdStatus.Dir = dir
 	out, err := cmdStatus.Output()
 	if err != nil {
