@@ -9,6 +9,8 @@ set -e
 
 tag=$1
 
+rm -f bin/*
+
 ./run/build.sh darwin arm64
 ./run/build.sh darwin amd64
 
