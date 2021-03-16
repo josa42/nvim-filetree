@@ -12,7 +12,7 @@ tag=$1
 ./run/build.sh darwin arm64
 ./run/build.sh darwin amd64
 
-rm -rf run pkg
+rm -rf run pkg go.mod go.sum
 
 tag="v$(echo $tag | sed 's/^v//')"
 
