@@ -11,8 +11,11 @@ import (
 	"github.com/josa42/nvim-filetree/pkg/opener"
 )
 
+var uuid string
+
 func main() {
 	defer neovim.SetupLogging()()
+	neovim.SetUUID(uuid)
 	neovim.Register(&TreePlugin{})
 }
 

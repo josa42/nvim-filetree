@@ -9,14 +9,15 @@ set -e
 
 tag=$1
 
-./run/build.sh
+./run/build.sh darwin arm64
+./run/build.sh darwin amd64
 
 rm -rf run pkg
 
 tag="v$(echo $tag | sed 's/^v//')"
 
 git add -A
-git add -f bin/tree
+git add -f bin/tree*
 
 git commit -m "🎉 Release $tag"
 
