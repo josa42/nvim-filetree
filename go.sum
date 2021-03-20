@@ -6,6 +6,8 @@ github.com/josa42/go-gitignore v1.0.0 h1:pWr86Acb7dcYfLfjieo2SW1b+ojTP/GSlpN1ihC
 github.com/josa42/go-gitignore v1.0.0/go.mod h1:SJYlhpTFil4XrzHXPFgvms02VWuGbirZXjoSZ3BQLWo=
 github.com/josa42/go-neovim v0.3.0 h1:tG5XMX9YEb2J+fD5r/cKSujjCbUC8Q7IsgQyniRes8k=
 github.com/josa42/go-neovim v0.3.0/go.mod h1:Wp/3Fx4i7GDjECyEhnJBDAr0LdhAn6gGp8UMRUKvKog=
+github.com/josa42/go-neovim v0.3.1 h1:6Fg+6abRDymulTxCaVEaMaGHUx82fc8xUiVZlRd2wQE=
+github.com/josa42/go-neovim v0.3.1/go.mod h1:Wp/3Fx4i7GDjECyEhnJBDAr0LdhAn6gGp8UMRUKvKog=
 github.com/mattn/go-colorable v0.1.4/go.mod h1:U0ppj6V5qS13XJ6of8GYAs25YV2eR4EVcfRqFIhoBtE=
 github.com/mattn/go-colorable v0.1.8/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
 github.com/mattn/go-isatty v0.0.8/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
@@ -13,6 +15,8 @@ github.com/mattn/go-isatty v0.0.11/go.mod h1:PhnuNfih5lzO57/f3n+odYbM4JtupLOxQOA
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
 github.com/neovim/go-client v1.1.7 h1:nQY7XwQwCQQ4DtUkXcTsxAlCFgS4D6mi0KMqrHvY0ew=
 github.com/neovim/go-client v1.1.7/go.mod h1:lec+fTkbKMMQEcbP9SdiCteZeAhdchUsw6I1MGcqBkc=
+github.com/neovim/go-client v1.1.8-0.20210316122152-2f2159c45575 h1:hQatx35jYiARQhyTiwkZkmEmL67R6fd3t7zHXUjGOUs=
+github.com/neovim/go-client v1.1.8-0.20210316122152-2f2159c45575/go.mod h1:lec+fTkbKMMQEcbP9SdiCteZeAhdchUsw6I1MGcqBkc=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rakyll/gotest v0.0.5/go.mod h1:SkoesdNCWmiD4R2dljIUcfSnNdVZ12y8qK4ojDkc2Sc=
