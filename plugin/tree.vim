@@ -4,16 +4,13 @@ endif
 let g:loaded_tree = 1
 let s:plugin_root = fnamemodify(resolve(expand('<sfile>:p')), ':h:h')
 
-function! s:unameMatch(search, found, default)
-  if match(system('uname -a'), a:search) | return a:found | endif
-  return a:default
-endfunction
-
 function! s:getBinName()
   if has("win32")
     return "tree-windows-amd64"
+  elseif has("mac") && system('arch') == 'arm64'
+    return 'tree-darwin-arm64'
   elseif has("mac")
-    return 'tree-darwin-' . s:unameMatch('arm64', 'arm64', 'amd64')
+    return 'tree-darwin-amd64'
   elseif has("unix")
     return "tree-linux-amd64"
   endif
