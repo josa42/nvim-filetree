@@ -290,6 +290,7 @@ func (p *TreePlugin) createTreeBuffer() *neovim.Buffer {
 		"colorcolumn=",
 	}, " "))
 	p.api.Execute("iabclear <buffer>")
+	p.api.Execute("set winhighlight=Normal:TreeNormal")
 
 	p.api.Renderer.Attach(buffer, p.treeView)
 

@@ -13,7 +13,8 @@ syn match TreeStatusAdded       /\(^\(  \)*\)\@<=⦿/  containedin=TreeStatus
 syn match TreeStatusConcflicted /\(^\(  \)*\)\@<=◉/  containedin=TreeStatus
 
 " Default theme
-highlight default link TreeFileIcon  Normal
+highlight default link TreeNormal    Normal
+highlight default link TreeFileIcon  TreeNormal
 highlight default link TreeDirIcon   Directory
 highlight default link TreeDirSlash  Comment
 highlight default link TreeDirName   Directory
